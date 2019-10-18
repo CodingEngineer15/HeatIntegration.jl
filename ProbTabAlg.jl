@@ -10,27 +10,32 @@ data = hcat(H1,H2,C1,C2)
 
 # need to shift temps by T_MIN
 function shiftTemps(data, tmin)
+#Functions shifts the temperatures of the streams and also provides the temperature axis.
   t_shift = tmin/2.0
   numStreams = length(data[1,:]) #numste
   println(numStreams)
   shifttemps = zeros(2,numStreams)
-  for i=1:numStreams
-    if (data[1,i] - data[2,i]) > 0
+  for i=1:numStreams ### Add t_shift to cold stream, deduct t_shift from hot stream 
+    if (data[1,i] - data[2,i]) > 0 ### Final temp lower therefore hot stream
       shifttemps[1,i] = data[1,i] - t_shift
       shifttemps[2,i] = data[2,i] - t_shift
       #shifttemps[:,i] = data[1:2,i] .- t_shift
-    else
+    else  ### Final temp higher therefore cold stream
       shifttemps[1,i] = data[1,i] + t_shift
       shifttemps[2,i] = data[2,i] + t_shift
       #shifttemps[:,i] = data[1:2,i] +- t_shift
     end
   end
   CP = data[3,:]
+	# sort(unique(shifttemps[:])): Return a tuple containing the shifted temps in order to provide the temperature intervals
+	# shifttemps: Return the data containing shifted temps of the stream
+	# Return heat capacities of the stream
   return (sort(unique(shifttemps[:])),shifttemps,CP)
+
 end
-println(shiftTemps(data,10.0)) #shiftTemps algorithm works
 
 function sigmaCP(data,tmin)
+## Provides the sum of the CP values for each respective temperature interval.
   tempaxis,ShiftedData,CP = shiftTemps(data,tmin) ####Need to use shifttemps for data
   numStreams = length(data[1,:])
   #temp_interval = zeros(numStreams)
@@ -38,11 +43,11 @@ function sigmaCP(data,tmin)
   sigma_CP = zeros(length(temp_interval))
   #print(temp_interval) ## so far so good
   for i=1:length(tempaxis)-1
-  ##for i in eachindex(temp_interval) orginal form
-    sigma_CP[i] = 0
+  ##For every interval in the temperature axis...
+    sigma_CP[i] = 0.0 # Initial sigma CP to zero for every temperature interval
     ####This is to help form CP stream
-    for j=1:numStreams
-      #println("i=",i,"\n","j=",j,"\n")
+    for j=1:numStreams # ... for every stream
+	 # This loop checks if the streams temperature overlaps with the temperature interval and updates sigma CP for that stream
       if (ShiftedData[1,j] <= tempaxis[i] && ShiftedData[2,j] <= tempaxis[i]) ||
         (ShiftedData[1,j] >= tempaxis[i+1] && ShiftedData[2,j] >= tempaxis[i+1])##i+1 is the issue 
         ###Edit was in the < -> <=
@@ -50,39 +55,32 @@ function sigmaCP(data,tmin)
       else
         if (ShiftedData[1,j] - ShiftedData[2,j]) > 0 ##This makes it a hot stream
           sigma_CP[i] += CP[j]
-       #   println(data[1,j], "  ,  ", data[2,j], "  CP: ",data[3,j])
-      #    println("i=",i,"     ","j=",j,"\n")
         else
           sigma_CP[i] -= CP[j] #ShiftedData[3,j]
-    #      println(data[1,j],"     ", data[2,j], "  CP: -",data[3,j])
-   #       println("i=",i,"     ","j=",j,"\n")
         end
       end ###### CP stream made
     end
-    #println("CP for index ",i,"  ", sigma_CP[i],"-------------------")
   end
-  #println("CPs: ",sigma_CP)
   return sigma_CP
   
 end
 
-sigmaCP(data,10)
 
 function ProblemTable(data,tmin)
- CP = sigmaCP(data,tmin)
- shiftedData = shiftTemps(data,tmin)
- temp_interval = [shiftedData[1][i+1] - shiftedData[1][i] for i=1:length(shiftedData[1])-1]
- deltaH = CP .* temp_interval
- println(deltaH)
- cascade = zeros(length(shiftedData[1]))
- cascade[2:end] = cumsum(reverse(deltaH))
- println("before: ",cascade)
- cascade .-= minimum(cascade)
- println(cascade)
+#This function implements the problem table algorithm
+	CP = sigmaCP(data,tmin)
+	shiftedData = shiftTemps(data,tmin)
+	temp_interval = [shiftedData[1][i+1] - shiftedData[1][i] for i=1:length(shiftedData[1])-1]
+	deltaH = CP .* temp_interval
+	println(deltaH)
+ #Cascade the enthalpies
+	cascade = zeros(length(shiftedData[1])) ## This serves as a dump so you don't have to keep making a new array and copying the contents making the code run quicker
+	cascade[2:end] = cumsum(reverse(deltaH))
+	println("before: ",cascade)
+	cascade .-= minimum(cascade)
+	println("Hot utility = ",cascade[1])
+	println("Cold utility = ",cascade[end])
+	println("shifted temp where pinch occurs: ", shiftedData[1,findall(iszero,cascade)])
+	return cascade
 end
-
-ProblemTable(data,10.0)
-########SO far it is correct the whole algorithm, just need to check for when the delta T is less the same as the dTmin
-#println(data)
-#println(data[3,4])
 
