@@ -1,12 +1,12 @@
 #!/usr/local/bin/julia
 ##########Main issues are in the beginning and end of the loop in ProblemTable algorithm
 ####test data in order of INITIAL temp, TARGET temp, HEAT_CAPACITY
-H1 = [180, 80, 20]
+#=H1 = [180, 80, 20]
 H2  = [130, 40, 40]
 C1 = [60, 100, 80]
 C2 = [30, 120, 36]
 data = hcat(H1,H2,C1,C2)
-
+=#
 
 # need to shift temps by T_MIN
 function shiftTemps(data, tmin)
@@ -80,7 +80,9 @@ function ProblemTable(data,tmin)
 	cascade .-= minimum(cascade)
 	println("Hot utility = ",cascade[1])
 	println("Cold utility = ",cascade[end])
-	println("shifted temp where pinch occurs: ", shiftedData[1,findall(iszero,cascade)])
+	index = findmin(cascade)[2] # index of where zero happens, note cascade is all positive now
+	reverse!(shiftedData[1]) # Need to reverse the temp axis so it now correlates with cascade
+	println("shifted temp where pinch occurs: ", shiftedData[1][index])
 	return cascade
 end
 
