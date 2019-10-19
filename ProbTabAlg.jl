@@ -1,12 +1,5 @@
 #!/usr/local/bin/julia
-##########Main issues are in the beginning and end of the loop in ProblemTable algorithm
-####test data in order of INITIAL temp, TARGET temp, HEAT_CAPACITY
-#=H1 = [180, 80, 20]
-H2  = [130, 40, 40]
-C1 = [60, 100, 80]
-C2 = [30, 120, 36]
-data = hcat(H1,H2,C1,C2)
-=#
+
 
 # need to shift temps by T_MIN
 function shiftTemps(data, tmin)
