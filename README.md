@@ -4,7 +4,7 @@ A set of functions to help in process heat integration
 Please note that the code is still going through testing and optimisation to make it more user friendly and is likely to break with future update
 # The data of the streams which should be in this format [supply temperature, target temperature, Heat capacity flowrate]
 
-#Open up the julia shell and type in the following
+#Open up the julia shell and type in the following and provide execution permissions to files ending in .jl
 
 H1 = [180, 80, 20]
 
