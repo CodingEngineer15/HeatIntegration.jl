@@ -2,6 +2,7 @@
 
 
 # need to shift temps by T_MIN
+module HeatIntegration
 function shiftTemps(data, tmin)
 #Functions shifts the temperatures of the streams and also provides the temperature axis.
   t_shift = tmin/2.0
@@ -78,4 +79,4 @@ function ProblemTable(data,tmin)
 	println("shifted temp where pinch occurs: ", shiftedData[1][index])
 	return cascade
 end
-
+end
