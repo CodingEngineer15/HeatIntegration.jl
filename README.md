@@ -1,3 +1,4 @@
+
 # HeatIntegration.jl
 A set of functions to help in process heat integration 
 Please note that the code is still going through testing and optimisation to make it more user friendly and is likely to break with future update
@@ -21,6 +22,4 @@ data = hcat(H1,H2,C1,C2) # It is recommended that the data should be in a 3xn ma
 
 include("PropTabAlg.jl")
 
-using Main.HeatIntegration
-
-ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference
+Main.HeatIntegration.ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference
