@@ -21,6 +21,6 @@ data = hcat(H1,H2,C1,C2) # It is recommended that the data should be in a 3xn ma
 
 include("PropTabAlg.jl")
 
-using Main.
+using Main.HeatIntegration
 
 ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference
