@@ -20,6 +20,6 @@ data = hcat(H1,H2,C1,C2) # It is recommended that the data should be in a 3xn ma
 
 #Then add permissions to the programmes ending in .jl
 
-include("PropTabAlg.jl")
+include("PropTabAlg.jl") #Occasionally throws an error for some reason. Make sure permissions are provided then execute this line again
 
-Main.HeatIntegration.ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference
+Main.HeatIntegration.ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference. Note that the temperature difference must be a float
