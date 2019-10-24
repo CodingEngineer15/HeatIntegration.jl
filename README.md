@@ -13,4 +13,14 @@ C2 = [30, 120, 36]
 
 data = hcat(H1,H2,C1,C2) # It is recommended that the data should be in a 3xn matrix
 
+#Change to the HeatIntegration.jl directory
+
+#Then add permissions to the programmes ending in .jl
+
+#Then open up the julia shell and type in the following
+
+include("PropTabAlg.jl")
+
+using Main.
+
 ProblemTable(data,10.0) # where 10.0 is the minimum temperature difference
