@@ -25,7 +25,7 @@ function shiftTemps(data, tmin)
 	# shifttemps: Return the data containing shifted temps of the stream
 	# Return heat capacities of the stream
   return (sort(unique(shifttemps[:])),shifttemps,CP)
-
+	
 end
 
 function sigmaCP(data,tmin)
